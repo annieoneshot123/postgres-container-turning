@@ -1,0 +1,25 @@
+FROM ubuntu:20.04
+MAINTAINER crunchy
+
+# Install postgresql deps
+RUN apt-get update && \
+    apt-get upgrade -y
+
+# set up cpm directory
+RUN mkdir -p /opt/cpm/bin && \
+    mkdir -p /opt/cpm/conf && \
+    chmod 777 /opt/cpm /opt/cpm/bin /opt/cpm/conf
+
+# set environment vars
+ENV PGROOT /usr/lib/postgresql/9.4
+ENV PGDATA /pgdata
+
+# add path settings for postgres user
+ADD conf/.bash_profile /var/lib/postgresql/
+
+# add volumes to allow override of pg_hba.conf and postgresql.conf
+VOLUME ["/pgconf"]
+
+# add volumes to allow backup of postgres files
+VOLUME ["/pgdata"]
+
